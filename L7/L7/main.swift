@@ -22,8 +22,8 @@ enum Operation {
 }
 
 class VerySimpleCalculator {
-    var a: Double!
-    var b: Double!
+    var firstValue: Double!
+    var secondValue: Double!
     var operation: Operation!
     
     init() {
@@ -31,7 +31,7 @@ class VerySimpleCalculator {
         print("Format: \"a operation b\", where \"a\" and \"b\" are numbers and operation is one of [+, -, *, /]. \n\nOr type stop/exit/quit to quit\n")
         var expression: String = readLine() ?? ""
         
-        while (!isFinished(expression)) {
+        while !isFinished(expression) {
             do {
                 try process(expression)
             } catch let error as CalculatorError {
@@ -45,13 +45,13 @@ class VerySimpleCalculator {
             
             switch operation! { //process() guarantees that 'operation' != nil
             case .add:
-                expression += " = \(a + b)"
+                expression += " = \(firstValue + secondValue)"
             case .substract:
-                expression += " = \(a - b)"
+                expression += " = \(firstValue - secondValue)"
             case .multiply:
-                expression += " = \(a * b)"
+                expression += " = \(firstValue * secondValue)"
             case .divide:
-                expression += " = \(a / b)"
+                expression += " = \(firstValue / secondValue)"
             }
             
             print("\(expression)\n")
@@ -67,6 +67,15 @@ class VerySimpleCalculator {
             throw CalculatorError.expressionFormatError
         }
         
+        guard let first = Double(String(parameters[0])),
+            let second = Double(String(parameters[2])) else{
+                
+            throw CalculatorError.numberFormatError
+        }
+        
+        firstValue = first
+        secondValue = second
+        
         switch String(parameters[1]) {
         case "+":
             operation = .add
@@ -80,19 +89,19 @@ class VerySimpleCalculator {
             throw CalculatorError.expressionFormatError
         }
         
-        if let first = Double(String(parameters[0])) {
-            a = first
-        } else {
-            throw CalculatorError.numberFormatError
-        }
+//        if let first = Double(String(parameters[0])) {
+//            firstValue = first
+//        } else {
+//            throw CalculatorError.numberFormatError
+//        }
+//
+//        if let second = Double(String(parameters[2])) {
+//            secondValue = second
+//        } else {
+//            throw CalculatorError.numberFormatError
+//        }
         
-        if let second = Double(String(parameters[2])) {
-            b = second
-        } else {
-            throw CalculatorError.numberFormatError
-        }
-        
-        if operation == Operation.divide && b == 0 {
+        if operation == .divide && secondValue == 0 {
             throw CalculatorError.dividedByZero
         }
     }
