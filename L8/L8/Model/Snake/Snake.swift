@@ -22,15 +22,16 @@ class Snake: SKShapeNode {
         body.append(head)
         addChild(head)
         
-        let bodyPart = SnakeBodyPart(atPoint: point)
-        body.append(bodyPart)
-        self.addChild(bodyPart)
     }
 
     func addBodyPart() {
-        let newBodyPart = SnakeBodyPart(atPoint: body[0].position)
-//        body.append(newBodyPart)
-        body.insert(newBodyPart, at: 1)
+        let newBodyPart = SnakeBodyPart(atPoint: body[body.count - 1].position)
+        
+        if body.count < 3 {
+            newBodyPart.physicsBody?.contactTestBitMask = CollisionCategories.EdgeBody | CollisionCategories.Apple
+        }
+        
+        body.append(newBodyPart)
         addChild(newBodyPart)
     }
     
